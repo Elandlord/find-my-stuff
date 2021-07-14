@@ -1,102 +1,77 @@
 <template>
-  <div id="login">
-    <PasswordReset v-if="showPasswordReset" @close="togglePasswordReset()"></PasswordReset>
-    <section>
-      <div class="col1">
-        <h1>Welcome to this Test App</h1>
+  <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+      <div>
+        <h2 class="mt-6 text-center text-xl font-extrabold text-gray-900">
+          Sign in to your <span class="text-green-600">Find My Stuff</span> account
+        </h2>
+
       </div>
-      <div class="col2">
-        <form v-if="showLoginForm" @submit.prevent>
-          <h1>Welcome Back</h1>
+      <form class="mt-8 space-y-6" @submit.prevent>
+        <div class="rounded-md shadow-sm -space-y-px">
           <div>
-            <label for="email1">Email</label>
-            <input v-model.trim="loginForm.email" type="text" placeholder="you@email.com" id="email1" />
-          </div>
-          <div>
-            <label for="password1">Password</label>
-            <input v-model.trim="loginForm.password" type="password" placeholder="******" id="password1" />
-          </div>
-          <button @click="login()" class="button">Log In</button>
-          <div class="extras">
-            <a @click="togglePasswordReset()">Forgot Password</a>
-            <a @click="toggleForm()">Create an Account</a>
-          </div>
-        </form>
-        <form v-else @submit.prevent>
-          <h1>Get Started</h1>
-          <div>
-            <label for="name">Name</label>
-            <input v-model.trim="signupForm.name" type="text" placeholder="Name" id="name" />
+            <label for="email-address" class="sr-only">Email address</label>
+            <input id="email-address" v-model.trim="loginForm.email" name="email" type="email" autocomplete="email" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm" placeholder="Email address">
           </div>
           <div>
-            <label for="title">Title</label>
-            <input v-model.trim="signupForm.title" type="text" placeholder="Title" id="title" />
+            <label for="password" class="sr-only">Password</label>
+            <input id="password" v-model.trim="loginForm.password" name="password" type="password" autocomplete="current-password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm" placeholder="Password">
           </div>
-          <div>
-            <label for="email2">Email</label>
-            <input v-model.trim="signupForm.email" type="text" placeholder="you@email.com" id="email2" />
+        </div>
+
+        <div class="flex items-center justify-between">
+
+          <div class="text-sm">
+          
+            <a class="font-medium text-green-600 hover:text-green-500 cursor-pointer">
+              <router-link to="/forgot-password">Forgot your password?</router-link>
+            </a>
           </div>
-          <div>
-            <label for="password2">Password</label>
-            <input v-model.trim="signupForm.password" type="password" placeholder="min 6 characters" id="password2" />
-          </div>
-          <button @click="signup()" class="button">Sign Up</button>
-          <div class="extras">
-            <a @click="toggleForm()">Back to Log In</a>
-          </div>
-        </form>
-      </div>
-    </section>
+        </div>
+
+        <div>
+            <button @click="login()" type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+              <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                <!-- Heroicon name: solid/lock-closed -->
+                <svg class="h-5 w-5 text-green-500 group-hover:text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                </svg>
+              </span>
+              Sign in
+            </button>
+            <router-link to="/register">
+              <p class="text-center mt-4 text-green-500">No account yet?</p>
+            </router-link>
+        </div>
+      </form>
+    </div>
   </div>
 </template>
 
 <script>
-  import PasswordReset from '@/components/PasswordReset'
-
   export default {
-    components: {
-      PasswordReset
-    },
-
     data() {
       return {
         loginForm: {
           email: '',
           password: ''
         },
-        signupForm: {
-          name: '',
-          title: '',
-          email: '',
-          password: ''
-        },
-        showLoginForm: true,
-        showPasswordReset: false,
       }
     },
 
     methods: {
-      toggleForm() {
-        this.showLoginForm = !this.showLoginForm
-      },
-
       togglePasswordReset() {
         this.showPasswordReset = !this.showPasswordReset
       },
 
       login() {
+        if( this.loginForm.email === '' || this.loginForm.password === '') {
+          return
+        }
+
         this.$store.dispatch('login', {
           email: this.loginForm.email,
           password: this.loginForm.password
-        })
-      },
-
-      signup() {
-        this.$store.dispatch('signup', {
-          email: this.signupForm.email,
-          password: this.signupForm.password,
-          name: this.signupForm.name,
-          title: this.signupForm.title
         })
       }
     }

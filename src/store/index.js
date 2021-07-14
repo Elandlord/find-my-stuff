@@ -70,8 +70,8 @@ const store = new Vuex.Store({
       const { user } = await fb.auth.signInWithEmailAndPassword(form.email, form.password)
 
       // fetch user profile and set in state
-      dispatch('fetchUserProfile', user)
       dispatch('getItems')
+      dispatch('fetchUserProfile', user)
     },
 
     async fetchUserProfile({ commit }, user) {
@@ -82,7 +82,7 @@ const store = new Vuex.Store({
       commit('setUserProfile', userProfile.data())
       
       // change route to dashboard
-      if (router.currentRoute.path === '/login') {
+      if (router.currentRoute.path === '/login' || router.currentRoute.path === '/register') {
         router.push('/')
       }
     },
