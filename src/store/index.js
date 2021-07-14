@@ -5,16 +5,50 @@ import router from '../router/index'
 
 Vue.use(Vuex)
 
-export default new Vuex.Store({
+// snapshot updates in realtime
+// TODO: refactor only for the current authenticated user 
+fb.itemsCollection.orderBy('createdOn', 'desc').onSnapshot(snapshot => {
+  let itemsArray = []
+
+  snapshot.forEach(doc => {
+    let item = doc.data()
+    item.id = doc.id
+
+    itemsArray.push(item)
+  })
+
+  store.commit('setItems', itemsArray)
+})
+
+const store = new Vuex.Store({
   state: {
-    userProfile: {}
+    userProfile: {},
+    items: [],
   },
+
   mutations: {
     setUserProfile(state, val) {
       state.userProfile = val
+    },
+
+    setItems(state, val) {
+      state.items = val
     }
   },
+
   actions: {
+    async createItem({ state }, item) {
+      await fb.itemsCollection.add({
+        createdOn: new Date(),
+        location: item.location,
+        name: item.name,
+        userId: fb.auth.currentUser.uid,
+        userName: state.userProfile.name,
+        comments: 0,
+        likes: 0
+      })
+    },
+
     async login({ dispatch }, form) {
       // sign user in
       const { user } = await fb.auth.signInWithEmailAndPassword(form.email, form.password)
@@ -31,7 +65,17 @@ export default new Vuex.Store({
       commit('setUserProfile', userProfile.data())
       
       // change route to dashboard
-      router.push('/')
+      if (router.currentRoute.path === '/login') {
+        router.push('/')
+      }
+    },
+
+    async logout({ commit }) {
+      await fb.auth.signOut()
+    
+      // clear userProfile and redirect to /login
+      commit('setUserProfile', {})
+      router.push('/login')
     },
 
     async signup({ dispatch }, form) {
@@ -49,3 +93,5 @@ export default new Vuex.Store({
     }
   }
 })
+
+export default store
