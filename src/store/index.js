@@ -6,18 +6,8 @@ import router from '../router/index'
 Vue.use(Vuex)
 
 // snapshot updates in realtime
-// TODO: refactor only for the current authenticated user 
-fb.itemsCollection.orderBy('createdOn', 'desc').onSnapshot(snapshot => {
-  let itemsArray = []
-
-  snapshot.forEach(doc => {
-    let item = doc.data()
-    item.id = doc.id
-
-    itemsArray.push(item)
-  })
-
-  store.commit('setItems', itemsArray)
+fb.itemsCollection.onSnapshot(() => {
+  store.dispatch('getItems')
 })
 
 const store = new Vuex.Store({
@@ -49,12 +39,38 @@ const store = new Vuex.Store({
       })
     },
 
+    async getItems({ commit }) {
+        const user = fb.auth.currentUser
+
+        if(!user) {
+          commit('setItems', [])
+        }
+
+        // TODO: Order desc by created date
+        fb.itemsCollection.where('userId', '==', user.uid)
+          .get()
+          .then((snapshot) => {
+            let itemsArray = []
+
+            snapshot.forEach(doc => {
+              let item = doc.data()
+              item.id = doc.id
+          
+              itemsArray.push(item)
+            })
+
+            commit('setItems', itemsArray)
+          })
+
+    },
+
     async login({ dispatch }, form) {
       // sign user in
       const { user } = await fb.auth.signInWithEmailAndPassword(form.email, form.password)
 
       // fetch user profile and set in state
       dispatch('fetchUserProfile', user)
+      dispatch('getItems')
     },
 
     async fetchUserProfile({ commit }, user) {
