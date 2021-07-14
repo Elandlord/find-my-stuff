@@ -3,8 +3,10 @@ node_modules
 /dist
 
 # Firebase files
+.firebase/*
 firestore.rules
 storage.rules
+firebase-debug.log
 firestore.indexes.json
 database.rules.json
 
