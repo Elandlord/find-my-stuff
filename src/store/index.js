@@ -44,6 +44,7 @@ const store = new Vuex.Store({
 
         if(!user) {
           commit('setItems', [])
+          return
         }
 
         // TODO: Order desc by created date

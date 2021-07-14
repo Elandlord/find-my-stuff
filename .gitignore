@@ -2,6 +2,12 @@
 node_modules
 /dist
 
+# Firebase files
+firestore.rules
+storage.rules
+firestore.indexes.json
+database.rules.json
+
 
 # local env files
 .env
