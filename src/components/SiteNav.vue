@@ -49,7 +49,7 @@
           Settings
         </router-link>
 
-        <a @click="logout()" :class="activeStatus('Logout')" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium cursor-pointer">logout</a>
+        <a @click="logout()" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium cursor-pointer">logout</a>
       </div>
     </div>
   </nav>
@@ -57,18 +57,6 @@
 
 <script>
     export default {      
-        computed:{
-          activeStatus(){
-            return route => {
-              if(this.$router.currentRoute.name !== route) {
-                  return ' '
-                }
-
-                return 'bg-gray-900 text-white'
-            }
-          }
-        },
-
         methods: {
             logout() {
                 this.$store.dispatch('logout')
