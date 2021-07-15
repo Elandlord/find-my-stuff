@@ -47,11 +47,11 @@ export default {
       showSuccess: false
     }
   },
-
-  computed: {
-    ...mapState(['userProfile'])
-  },
   
+  computed: {
+    ...mapState(['userProfile']),
+  },
+
   methods: {
     updateProfile() {
         this.$store.dispatch('updateProfile', {

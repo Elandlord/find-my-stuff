@@ -18,16 +18,18 @@
           <div class="hidden sm:block sm:ml-6">
             <div class="flex space-x-4">
               <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-              <router-link to="/">
-                <a href="#" class="bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium" aria-current="page">Dashboard</a>
+              <router-link to="/" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium cursor-pointer" exact-active-class="bg-gray-900 text-white">
+                Dashboard
               </router-link>
 
-              <router-link to="/settings">
-                <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Settings</a>
+              <router-link to="/settings" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium cursor-pointer" active-class="bg-gray-900 text-white">
+                Settings
               </router-link>
 
 
-              <a @click="logout()" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Logout</a>
+              <a @click="logout()" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium cursor-pointer">
+                Logout
+              </a>
             </div>
           </div>
         </div>
@@ -39,33 +41,38 @@
 
     <div class="sm:hidden" id="mobile-menu">
       <div class="px-2 pt-2 pb-3 space-y-1">
-        <router-link to="/">
-          <a href="#" class="bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium" aria-current="page">Dashboard</a>
+        <router-link to="/" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium cursor-pointer" active-class="bg-gray-900 text-white">
+          Dashboard
         </router-link>
 
-        <router-link to="/settings">
-          <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Settings</a>
+        <router-link to="/settings" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium cursor-pointer" active-class="bg-gray-900 text-white">
+          Settings
         </router-link>
 
-
-        <a @click="logout()" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">logout</a>
+        <a @click="logout()" :class="activeStatus('Logout')" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium cursor-pointer">logout</a>
       </div>
     </div>
   </nav>
 </template>
 
 <script>
-    export default {
-        computed: {
-            currentRouteName() {
-                return this.$route.name;
+    export default {      
+        computed:{
+          activeStatus(){
+            return route => {
+              if(this.$router.currentRoute.name !== route) {
+                  return ' '
+                }
+
+                return 'bg-gray-900 text-white'
             }
+          }
         },
 
         methods: {
             logout() {
                 this.$store.dispatch('logout')
-            }
+            },
         }
     }
 </script>

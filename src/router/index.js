@@ -26,7 +26,7 @@ Vue.use(VueRouter)
     },
     {
       path: '/settings',
-      name: 'settings',
+      name: 'Settings',
       component: () => import( /* webpackChunkName: "settings" */ '../views/Settings.vue'),
       meta: {
         requiresAuth: true
