@@ -107,6 +107,17 @@ const store = new Vuex.Store({
     
       // fetch user profile and set in state
       dispatch('fetchUserProfile', user)
+    },
+
+    async updateProfile({ dispatch }, user) {
+      const userId = fb.auth.currentUser.uid
+      // update user object
+      await fb.usersCollection.doc(userId).update({
+        name: user.name,
+        title: user.title
+      })
+    
+      dispatch('fetchUserProfile', { uid: userId })
     }
   }
 })

@@ -56,6 +56,12 @@
 
 <script>
     export default {
+        computed: {
+            currentRouteName() {
+                return this.$route.name;
+            }
+        },
+
         methods: {
             logout() {
                 this.$store.dispatch('logout')
