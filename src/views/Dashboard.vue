@@ -92,7 +92,7 @@
                       </span>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
+                      <a href="#" class="text-indigo-600 hover:text-indigo-900" @click="loadItemForEdit(item)">Edit</a>
                     </td>
                   </tr>
                 </tbody>
@@ -101,6 +101,45 @@
                 <p class="font-bold">No items found.</p>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-if="editMode" class="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+      <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+          <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+            <div class="w-full">
+              <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                <form @submit.prevent>
+                    <div class="mb-4">
+                      <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
+                        Iten name
+                      </label>
+                      <input v-model.trim="itemToUpdate.name" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="name" type="text" placeholder="Item name">
+                    </div>
+                    <div class="mb-6">
+                      <label class="block text-gray-700 text-sm font-bold mb-2" for="location">
+                        Location
+                      </label>
+                      <input v-model.trim="itemToUpdate.location" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="location" type="text" placeholder="Location">
+                    </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+            <button  @click="updateItem()" :disabled="itemToUpdate.location === '' || itemToUpdate.name === ''" type="submit" class="group relative w-full sm:w-auto ml-2 inline-flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                Update item
+            </button>
+            <button @click="toggleEditMode" type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+              Cancel
+            </button>
           </div>
         </div>
       </div>
@@ -118,7 +157,13 @@
         item: {
           location: '',
           name: '',
-        }
+        },
+        itemToUpdate: {
+          id: '',
+          location: '',
+          name: '',         
+        },
+        editMode: false,
       }
     },
 
@@ -148,6 +193,42 @@
         })
         this.item.location = ''
         this.item.name = ''
+      },
+
+      updateItem() {
+        if (this.itemToUpdate.id === '') {
+          return
+        }
+
+        this.$store.dispatch('updateItem', { 
+          id: this.itemToUpdate.id,
+          location: this.itemToUpdate.location,
+          name: this.itemToUpdate.name,
+        })
+
+        this.itemToUpdate.id = ''
+        this.itemToUpdate.location = ''
+        this.itemToUpdate.name = ''
+
+        this.toggleEditMode()
+      },
+
+      loadItemForEdit(item) {
+        let foundItem = this.items.find(arrayItem => arrayItem.id === item.id)
+
+        if (foundItem === undefined) {
+          return
+        }
+
+        this.itemToUpdate.id = foundItem.id
+        this.itemToUpdate.location = foundItem.location
+        this.itemToUpdate.name = foundItem.name
+
+        this.toggleEditMode()
+      },
+
+      toggleEditMode() {
+        this.editMode = !this.editMode
       }
     }
   }

@@ -39,6 +39,15 @@ const store = new Vuex.Store({
       })
     },
 
+    async updateItem({ dispatch }, updatedItem) {
+      await fb.itemsCollection.doc(updatedItem.id).update({
+        location: updatedItem.location,
+        name: updatedItem.name,
+      })    
+
+      dispatch('getItems')
+    },
+
     async getItems({ commit }) {
         const user = fb.auth.currentUser
 
